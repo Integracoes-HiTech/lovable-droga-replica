@@ -20,6 +20,39 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // Função para formatar o telefone no padrão brasileiro
+  const formatPhoneNumber = (value: string): string => {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 11 dígitos (DDD + 9 dígitos)
+    const limitedNumbers = numbers.slice(0, 11);
+    
+    // Aplica a formatação baseada no número de dígitos
+    if (limitedNumbers.length <= 2) {
+      return limitedNumbers;
+    } else if (limitedNumbers.length <= 7) {
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2)}`;
+    } else {
+      return `(${limitedNumbers.slice(0, 2)}) ${limitedNumbers.slice(2, 7)}-${limitedNumbers.slice(7)}`;
+    }
+  };
+
+  // Função para validar o formato do telefone
+  const isValidPhoneNumber = (phoneNumber: string): boolean => {
+    // Remove formatação para validar apenas números
+    const numbers = phoneNumber.replace(/\D/g, '');
+    
+    // Verifica se tem 10 ou 11 dígitos (com ou sem o 9 adicional)
+    return numbers.length === 10 || numbers.length === 11;
+  };
+
+  // Handler para mudança do telefone com formatação automática
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedPhone = formatPhoneNumber(e.target.value);
+    setPhone(formattedPhone);
+  };
+
   const totalPrice = getTotalPrice();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,6 +60,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose }) => {
     
     if (!phone.trim()) {
       showError('Por favor, informe seu telefone para contato.');
+      return;
+    }
+
+    if (!isValidPhoneNumber(phone)) {
+      showError('Por favor, informe um telefone válido no formato (62) 99999-9999.');
       return;
     }
 
@@ -163,16 +201,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose }) => {
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#e41e3c]" />
                 <Input
                   type="tel"
-                  placeholder="(11) 99999-9999"
+                  placeholder="(62) 99999-9999"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="pl-10 border-2 border-gray-200 focus:border-[#e41e3c] focus:ring-[#e41e3c]"
+                  onChange={handlePhoneChange}
+                  className={`pl-10 border-2 focus:ring-[#e41e3c] ${
+                    phone && !isValidPhoneNumber(phone) 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-gray-200 focus:border-[#e41e3c]'
+                  }`}
                   required
                 />
               </div>
               <p className="text-sm text-gray-600 mt-2 font-newjune-regular">
                 📞 Precisamos do seu telefone para confirmar o pedido e combinar a entrega
               </p>
+              {phone && !isValidPhoneNumber(phone) && (
+                <p className="text-sm text-red-600 mt-1 font-newjune-regular">
+                  ⚠️ Digite um telefone válido no formato (62) 99999-9999
+                </p>
+              )}
             </div>
 
 
@@ -204,7 +251,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose }) => {
                 type="submit"
                 form="order-form"
                 className="flex-1 bg-[#e41e3c] hover:bg-[#c41e3c] font-newjune-extrabold"
-                disabled={!phone.trim() || !customerName.trim() || isSubmitting || items.length === 0}
+                disabled={!phone.trim() || !isValidPhoneNumber(phone) || !customerName.trim() || isSubmitting || items.length === 0}
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">

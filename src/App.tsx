@@ -12,6 +12,7 @@ import { AdModal } from "@/components/AdModal";
 import { useState } from "react";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
+import ProductDetails from "./pages/ProductDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,10 +30,11 @@ const App = () => {
           <BrowserRouter>
             <div className="min-h-screen flex flex-col">
               <Header onOpenOrderModal={() => setIsOrderModalOpen(true)} />
-              <main className="flex-1 pt-32">
+              <main className="flex-1 pt-40 lg:pt-32">
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/catalogo" element={<Catalog />} />
+                  <Route path="/produto/:id" element={<ProductDetails />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

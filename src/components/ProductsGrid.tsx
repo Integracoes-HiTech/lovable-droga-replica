@@ -30,23 +30,59 @@ export default function ProductsGrid({ title = "Produtos em destaque", products 
   };
 
   const getProductLink = (product: Product) => {
-    // Mapear IDs dos produtos para parâmetros de URL
+    // Mapear IDs dos produtos para parâmetros de URL amigáveis
     const productMap: { [key: string]: string } = {
       "1": "paracetamol",
+      "2": "ibuprofeno",
       "3": "dipirona", 
       "4": "omeprazol",
-      "16": "vitamina-c"
+      "5": "loratadina",
+      "6": "protetor-solar",
+      "7": "hidratante-facial",
+      "8": "shampoo-anticaspa",
+      "9": "desodorante",
+      "10": "creme-maos",
+      "11": "escova-dentes",
+      "12": "pasta-dente",
+      "13": "fio-dental",
+      "14": "sabonete-liquido",
+      "15": "papel-higienico",
+      "16": "vitamina-c",
+      "17": "vitamina-d",
+      "18": "omega-3",
+      "19": "whey-protein",
+      "20": "multivitaminico",
+      "21": "fralda-bebe",
+      "22": "leite-po",
+      "23": "shampoo-bebe",
+      "24": "creme-assadura",
+      "25": "mamadeira",
+      "26": "joelheira",
+      "27": "bengala",
+      "28": "cinta-lombar",
+      "29": "tornozeleira",
+      "30": "colar-cervical",
+      "31": "glicosimetro",
+      "32": "tiras-glicose",
+      "33": "lancetas",
+      "34": "adocante",
+      "35": "chocolate-diet",
+      "36": "band-aid",
+      "37": "alcool",
+      "38": "soro-fisiologico",
+      "39": "gaze",
+      "40": "atadura"
     };
     
     const productParam = productMap[product.id] || product.id;
-    return `/catalogo?produto=${productParam}`;
+    return `/produto/${productParam}`;
   };
 
   return (
     <section className="mt-12">
       <h2 className="mb-6 text-2xl font-bold text-primary font-newjune-extrabold">{title}</h2>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {workingProducts.map((p) => (
           <Link key={p.id} to={getProductLink(p)} className="block">
             <Card className="group overflow-hidden border-none bg-white shadow-md hover:shadow-lg transition cursor-pointer">

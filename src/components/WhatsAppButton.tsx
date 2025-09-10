@@ -11,7 +11,7 @@ const WhatsAppButton = () => {
   return (
     <button
       onClick={handleWhatsAppClick}
-      className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-[#25D366] hover:bg-[#128C7E] rounded-full shadow-lg flex items-center justify-center animate-pulse-slow transition-all duration-300 hover:scale-110"
+      className="fixed bottom-6 right-6 z-40 w-16 h-16 bg-[#25D366] hover:bg-[#128C7E] rounded-full shadow-lg flex items-center justify-center animate-pulse-slow transition-all duration-300 hover:scale-110"
       aria-label="Fale conosco no WhatsApp"
     >
       <svg 

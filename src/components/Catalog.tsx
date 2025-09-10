@@ -8,7 +8,7 @@ import { ShoppingCart } from 'lucide-react';
 import { products, categories, type Product, type Category } from '@/lib/products';
 import { useCart } from '@/contexts/CartContext';
 import { useNotification } from '@/hooks/use-notification';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 export default function Catalog() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,6 +45,55 @@ export default function Catalog() {
   const handleAddToCart = (product: Product) => {
     addToCart(product);
     showProductAdded(product.name);
+  };
+
+  const getProductLink = (product: Product) => {
+    // Mapear IDs dos produtos para parâmetros de URL amigáveis
+    const productMap: { [key: string]: string } = {
+      "1": "paracetamol",
+      "2": "ibuprofeno",
+      "3": "dipirona", 
+      "4": "omeprazol",
+      "5": "loratadina",
+      "6": "protetor-solar",
+      "7": "hidratante-facial",
+      "8": "shampoo-anticaspa",
+      "9": "desodorante",
+      "10": "creme-maos",
+      "11": "escova-dentes",
+      "12": "pasta-dente",
+      "13": "fio-dental",
+      "14": "sabonete-liquido",
+      "15": "papel-higienico",
+      "16": "vitamina-c",
+      "17": "vitamina-d",
+      "18": "omega-3",
+      "19": "whey-protein",
+      "20": "multivitaminico",
+      "21": "fralda-bebe",
+      "22": "leite-po",
+      "23": "shampoo-bebe",
+      "24": "creme-assadura",
+      "25": "mamadeira",
+      "26": "joelheira",
+      "27": "bengala",
+      "28": "cinta-lombar",
+      "29": "tornozeleira",
+      "30": "colar-cervical",
+      "31": "glicosimetro",
+      "32": "tiras-glicose",
+      "33": "lancetas",
+      "34": "adocante",
+      "35": "chocolate-diet",
+      "36": "band-aid",
+      "37": "alcool",
+      "38": "soro-fisiologico",
+      "39": "gaze",
+      "40": "atadura"
+    };
+    
+    const productParam = productMap[product.id] || product.id;
+    return `/produto/${productParam}`;
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -201,63 +250,69 @@ export default function Catalog() {
 
       {/* Grid de Produtos */}
       <div className={viewMode === 'grid' 
-        ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
+        ? "grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
         : "space-y-4"
       }>
         {filteredProducts.map((product) => (
-          <Card key={product.id} className={`group overflow-hidden border-none bg-white shadow-md hover:shadow-lg transition ${viewMode === 'list' ? 'flex' : ''}`}>
-            <div className={`relative ${viewMode === 'list' ? 'w-32 h-32' : 'aspect-[4/3]'} overflow-hidden bg-gray-50`}>
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-full object-cover transition duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-              {product.discount && (
-                <Badge className="absolute top-2 left-2 bg-[#e41e3c] text-white font-newjune-extrabold">
-                  -{product.discount}%
-                </Badge>
-              )}
-            </div>
-
-            <CardContent className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-              <div className="mb-2">
-                <Badge variant="secondary" className="text-xs font-newjune-regular">
-                  {getCategoryName(product.category)}
-                </Badge>
-              </div>
-
-              <h3 className="text-base font-semibold text-gray-900 font-newjune-extrabold mb-1">
-                {product.name}
-              </h3>
-              
-              {product.subtitle && (
-                <p className="text-sm text-muted-foreground line-clamp-2 font-newjune-regular mb-2">
-                  {product.subtitle}
-                </p>
-              )}
-
-              <div className="flex items-center gap-2 mb-3">
-                {product.originalPrice && (
-                  <span className="text-sm text-gray-500 line-through font-newjune-regular">
-                    {product.originalPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                  </span>
+          <Link key={product.id} to={getProductLink(product)} className="block">
+            <Card className={`group overflow-hidden border-none bg-white shadow-md hover:shadow-lg transition cursor-pointer ${viewMode === 'list' ? 'flex' : ''}`}>
+              <div className={`relative ${viewMode === 'list' ? 'w-32 h-32' : 'aspect-[4/3]'} overflow-hidden bg-gray-50`}>
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+                {product.discount && (
+                  <Badge className="absolute top-2 left-2 bg-[#e41e3c] text-white font-newjune-extrabold">
+                    -{product.discount}%
+                  </Badge>
                 )}
-                <span className="text-xl font-bold text-[#e41e3c] font-newjune-extrabold">
-                  {product.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                </span>
               </div>
 
-              <Button 
-                size="sm" 
-                className="w-full bg-[#e41e3c] hover:bg-[#c41e3c] flex items-center gap-2 font-newjune-extrabold"
-                onClick={() => handleAddToCart(product)}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Adicionar
-              </Button>
-            </CardContent>
-          </Card>
+              <CardContent className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
+                <div className="mb-2">
+                  <Badge variant="secondary" className="text-xs font-newjune-regular">
+                    {getCategoryName(product.category)}
+                  </Badge>
+                </div>
+
+                <h3 className="text-base font-semibold text-gray-900 font-newjune-extrabold mb-1">
+                  {product.name}
+                </h3>
+                
+                {product.subtitle && (
+                  <p className="text-sm text-muted-foreground line-clamp-2 font-newjune-regular mb-2">
+                    {product.subtitle}
+                  </p>
+                )}
+
+                <div className="flex items-center gap-2 mb-3">
+                  {product.originalPrice && (
+                    <span className="text-sm text-gray-500 line-through font-newjune-regular">
+                      {product.originalPrice.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                    </span>
+                  )}
+                  <span className="text-xl font-bold text-[#e41e3c] font-newjune-extrabold">
+                    {product.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                  </span>
+                </div>
+
+                <Button 
+                  size="sm" 
+                  className="w-full bg-[#e41e3c] hover:bg-[#c41e3c] flex items-center gap-2 font-newjune-extrabold"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }}
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Adicionar
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
